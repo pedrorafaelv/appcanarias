@@ -72,7 +72,10 @@ class Statedropdowns extends Component
     public function render()
     {
         $this->provincias = Provincia::all();
-        $this->municipios = Municipio::where('provincia_id', $this->selectedProvincia)->orderBy('nombre')->get();
+        $this->municipios = Municipio::all();
+        if (!is_null($this->selectedProvincia) and count($this->provincias)) {
+            $this->municipios = Municipio::where('provincia_id', $this->selectedProvincia)->orderBy('nombre')->get();
+        }
         return view('livewire.statedropdowns');
     }
 

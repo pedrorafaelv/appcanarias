@@ -1,10 +1,10 @@
 <x-registro-layout>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    {{-- <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" integrity="sha512-0bEtK0USNd96MnO4XhH8jhv3nyRF0eK87pJke6pkYf3cM0uDIhNJy9ltuzqgypoIFXw3JSuiy04tVk4AjpZdZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -184,10 +184,10 @@
             paramName: "image",
             previewsContainer: '#previews',
             previewTemplate: previewTemplate,
-            parallelUploads: 10,
+            parallelUploads: 14,
             //             addRemoveLinks: true,
             // dictRemoveFile: "Remove",
-            maxFiles: {{10 - $anuncio->imagens()->count()}},
+            maxFiles: {{14 - $anuncio->imagens()->count()}},
             maxFilesize: MAXIMO_TAMANIO_BYTES,
             acceptedFiles: '.jpg,.jpeg,.png',            
             init: function() {

@@ -1,257 +1,223 @@
-<div class="bg-white rounded-lg shadow-md p-6 mb-6">
-    <div class="space-y-6">
+ <!-- Incluir Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome para íconos -->
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> --}}
+    
+    <style>
+        /* Estilos personalizados adicionales */
+        .form-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .form-section {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        .form-title {
+            color: #1a365d;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+    </style>
+
+
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
+    <div class="space-y-8">
+        <!-- Campos ocultos -->
         <input type="hidden" name="verificacion" value="Si">
-        <input type="hidden" name="user_id" value="{{ $anuncio->user_id }}" 
-               class="form-input @error('user_id') border-red-500 @enderror"
-               placeholder="Usuario">
-        @error('user_id')
-            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-        @enderror
+        <input type="hidden" name="user_id" value="{{ $anuncio->user_id }}">
 
+        <!-- Sección 1: Información básica -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-gray-700 mb-2">Título</label>
-                <input type="text" name="titulo" value="{{ old('titulo', $anuncio->titulo) }}"
-                       class="form-input w-full @error('titulo') border-red-500 @enderror"
-                       placeholder="Título">
-                @error('titulo')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+                    <input type="text" name="titulo" value="{{ old('titulo', $anuncio->titulo) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('titulo') border-red-500 @enderror"
+                           placeholder="Título del anuncio">
+                    @error('titulo')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div >
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
+                    <input type="text" name="nombre" value="{{ old('nombre', $anuncio->nombre) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('nombre') border-red-500 @enderror"
+                           placeholder="Tu nombre profesional">
+                    @error('nombre')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
-            <div>
-                <label class="block text-gray-700 mb-2">Nombre</label>
-                <input type="text" name="nombre" value="{{ old('nombre', $anuncio->nombre) }}"
-                       class="form-input w-full @error('nombre') border-red-500 @enderror"
-                       placeholder="Nombre">
-                @error('nombre')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                    <input type="text" name="slug" value="{{ old('slug', $anuncio->slug) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('slug') border-red-500 @enderror"
+                           placeholder="URL amigable">
+                    @error('slug')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Presentación actual</label>
+                    <div class="prose max-w-none p-3 bg-gray-50 rounded-md">
+                        {!! $anuncio->presentacion !!}
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div>
-            <label class="block text-gray-700 mb-2">Slug</label>
-            <input type="text" name="slug" value="{{ old('slug', $anuncio->slug) }}"
-                   class="form-input w-full @error('slug') border-red-500 @enderror"
-                   placeholder="Slug">
-            @error('slug')
-                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div>
-            <label class="block text-gray-700 mb-2">Presentación que se Muestra en el Anuncio</label>
-            <div class="prose max-w-none">
-                {!! $anuncio->presentacion !!}
-            </div>
-        </div>
-
-        <div class="@if($anuncio->presentacion_aux != $anuncio->presentacion) text-red-600 @endif">
-            <label class="block text-gray-700 mb-2">
-                Presentación 
-                @if($anuncio->presentacion_aux != $anuncio->presentacion) 
-                    <span class="text-sm">(Existen modificaciones)</span>
+        <!-- Sección 2: Presentación editable -->
+        <div class="@if($anuncio->presentacion_aux != $anuncio->presentacion) border-l-4 border-red-500 pl-4 @endif">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                Editar presentación 
+                @if($anuncio->presentacion_aux != $anuncio->presentacion)
+                    <span class="text-xs text-red-600">(Tienes cambios sin guardar)</span>
                 @endif
             </label>
-            <textarea name="presentacion_aux" 
-                      class="form-textarea w-full @error('presentacion_aux') border-red-500 @enderror"
-                      rows="4"
-                      maxlength="20"
-                      placeholder="Ingrese la presentación del anuncio.">{{ old('presentacion_aux', $anuncio->presentacion_aux) }}</textarea>
+            <textarea name="presentacion_aux" rows="4" id= "presentacion_aux" data-input="presentacion_aux"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('presentacion_aux') border-red-500 @enderror"
+                      placeholder="Describe tus servicios...">{{ old('presentacion_aux', $anuncio->presentacion_aux) }}</textarea>
             @error('presentacion_aux')
-                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
 
+        <!-- Sección 3: Horario -->
         <div>
-            <label class="block text-gray-700 mb-2">Horario</label>
-            <textarea name="horario" 
-                      class="form-textarea w-full @error('horario') border-red-500 @enderror"
-                      rows="4"
-                      maxlength="20"
-                      placeholder="Ingrese su horarios disponibles.">{{ old('horario', $anuncio->horario) }}</textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Horario de atención</label>
+            <textarea name="horario" rows="3" id= horario data-input="horario"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('horario') border-red-500 @enderror"
+                      placeholder="Ej: Lunes a Viernes 9:00 - 18:00">{{ old('horario', $anuncio->horario) }}</textarea>
             @error('horario')
-                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
 
-        <div class="bg-gray-100 p-4 rounded-lg mb-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Tarifas €</h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
-                <div>
-                    <label class="block text-gray-700 mb-2">30 Min.</label>
-                    <input type="number" name="treinta_minutos" value="{{ old('treinta_minutos', $anuncio->treinta_minutos) }}"
-                           class="form-input w-full @error('treinta_minutos') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('treinta_minutos')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 mb-2">45 Min.</label>
-                    <input type="number" name="cuarenta_y_cinco_minutos" value="{{ old('cuarenta_y_cinco_minutos', $anuncio->cuarenta_y_cinco_minutos) }}"
-                           class="form-input w-full @error('cuarenta_y_cinco_minutos') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('cuarenta_y_cinco_minutos')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 mb-2">1 Hora</label>
-                    <input type="number" name="una_hora" value="{{ old('una_hora', $anuncio->una_hora) }}"
-                           class="form-input w-full @error('una_hora') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('una_hora')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 mb-2">Medio día</label>
-                    <input type="number" name="medio_dia" value="{{ old('medio_dia', $anuncio->medio_dia) }}"
-                           class="form-input w-full @error('medio_dia') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('medio_dia')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 mb-2">El día</label>
-                    <input type="number" name="todo_el_dia" value="{{ old('todo_el_dia', $anuncio->todo_el_dia) }}"
-                           class="form-input w-full @error('todo_el_dia') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('todo_el_dia')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 mb-2">Fin de sem.</label>
-                    <input type="number" name="fin_de_semana" value="{{ old('fin_de_semana', $anuncio->fin_de_semana) }}"
-                           class="form-input w-full @error('fin_de_semana') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('fin_de_semana')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 mb-2">Hora Despl.</label>
-                    <input type="number" name="hora_desplazamiento" value="{{ old('hora_desplazamiento', $anuncio->hora_desplazamiento) }}"
-                           class="form-input w-full @error('hora_desplazamiento') border-red-500 @enderror"
-                           placeholder="Precio">
-                    @error('hora_desplazamiento')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
+        <!-- Sección 4: Tarifas -->
+        <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tarifas (€)</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+                @foreach([
+                    'treinta_minutos' => '30 min',
+                    'cuarenta_y_cinco_minutos' => '45 min', 
+                    'una_hora' => '1 hora',
+                    'medio_dia' => 'Medio día',
+                    'todo_el_dia' => 'Día completo',
+                    'fin_de_semana' => 'Fin de semana',
+                    'hora_desplazamiento' => 'Hora despl.'
+                ] as $field => $label)
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">{{ $label }}</label>
+                        <input type="number" name="{{ $field }}" 
+                               value="{{ old($field, $anuncio->$field) }}"
+                               class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 @error($field) border-red-500 @enderror">
+                        @error($field)
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endforeach
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Sección 5: Información personal -->
+        <div class="grid grid-cols-1 md:grid-ccols-2 gap-6">
+            <!-- Orientación -->
             <div>
-                <p class="font-medium text-gray-700 mb-2">Orientación</p>
-                <div class="space-y-2">
-                    <label class="flex items-center">
-                        <input type="radio" name="orientacion" value="Heterosexual" 
-                               @checked(old('orientacion', $anuncio->orientacion ?: 'Heterosexual') == 'Heterosexual')
-                               class="mr-2">
-                        Heterosexual
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="orientacion" value="Bisexual" 
-                               @checked(old('orientacion', $anuncio->orientacion) == 'Bisexual')
-                               class="mr-2">
-                        Bisexual
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="orientacion" value="Homosexual" 
-                               @checked(old('orientacion', $anuncio->orientacion) == 'Homosexual')
-                               class="mr-2">
-                        Homosexual
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="orientacion" value="Otra" 
-                               @checked(old('orientacion', $anuncio->orientacion) == 'Otra')
-                               class="mr-2">
-                        Otra
-                    </label>
+                <p class="text-sm font-medium text-gray-700 mb-2">Orientación</p>
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach(['Heterosexual', 'Bisexual', 'Homosexual', 'Otra'] as $orientacion)
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="orientacion" value="{{ $orientacion }}" 
+                                   @checked(old('orientacion', $anuncio->orientacion ?: 'Heterosexual') == $orientacion)
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <span class="text-sm text-gray-700">{{ $orientacion }}</span>
+                        </label>
+                    @endforeach
                 </div>
                 @error('orientacion')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
+            <!-- Contacto -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-gray-700 mb-2">Teléfono</label>
-                    <input type="text" name="telefono" value="{{ old('telefono', $anuncio->telefono) }}"
-                           required minlength="9" maxlength="9"
-                           class="form-input w-full @error('telefono') border-red-500 @enderror"
-                           placeholder="Teléfono">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono *</label>
+                    <input type="tel" name="telefono" value="{{ old('telefono', $anuncio->telefono) }}"
+                           pattern="[0-9]{9}" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('telefono') border-red-500 @enderror"
+                           placeholder="612345678">
                     @error('telefono')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 mb-2">Teléfono Publicación</label>
-                    <input type="text" name="telefono_publicacion" value="{{ old('telefono_publicacion', $anuncio->telefono_publicacion) }}"
-                           maxlength="9"
-                           class="form-input w-full @error('telefono_publicacion') border-red-500 @enderror"
-                           placeholder="Teléfono Publicación">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono publicación</label>
+                    <input type="tel" name="telefono_publicacion" value="{{ old('telefono_publicacion', $anuncio->telefono_publicacion) }}"
+                           pattern="[0-9]{9}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('telefono_publicacion') border-red-500 @enderror"
+                           placeholder="Opcional">
                     @error('telefono_publicacion')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <div>
-                    <p class="font-medium text-gray-700 mb-2">Whatsapp</p>
-                    <div class="space-y-2">
-                        <label class="flex items-center">
-                            <input type="radio" name="whatsapp" value="No" 
-                                   @checked(old('whatsapp', $anuncio->whatsapp ?: 'Si') == 'No')
-                                   class="mr-2">
-                            No
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="whatsapp" value="Si" 
-                                   @checked(old('whatsapp', $anuncio->whatsapp ?: 'Si') == 'Si')
-                                   class="mr-2">
-                            Si
-                        </label>
+                    <p class="text-sm font-medium text-gray-700 mb-2">WhatsApp</p>
+                    <div class="flex space-x-4">
+                        @foreach(['Si' => 'Sí', 'No' => 'No'] as $value => $label)
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="whatsapp" value="{{ $value }}" 
+                                       @checked(old('whatsapp', $anuncio->whatsapp ?: 'Si') == $value)
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="text-sm text-gray-700">{{ $label }}</span>
+                            </label>
+                        @endforeach
                     </div>
                     @error('whatsapp')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
         </div>
 
+        <!-- Sección 6: Tipo de anuncio -->
         <div>
-            <p class="font-medium text-gray-700 mb-2">Tipo</p>
-            <div class="flex space-x-4">
-                <label class="flex items-center">
-                    <input type="radio" name="tipo" value="Normal" 
-                           @checked(old('tipo', $anuncio->tipo ?: 'Normal') == 'Normal')
-                           class="mr-2">
-                    Normal
-                </label>
-                <label class="flex items-center">
-                    <input type="radio" name="tipo" value="Doble" 
-                           @checked(old('tipo', $anuncio->tipo) == 'Doble')
-                           class="mr-2">
-                    Doble
-                </label>
+            <p class="text-sm font-medium text-gray-700 mb-2">Tipo de anuncio</p>
+            <div class="flex space-x-6">
+                @foreach(['Normal' => 'Normal', 'Doble' => 'Doble'] as $value => $label)
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="tipo" value="{{ $value }}" 
+                               @checked(old('tipo', $anuncio->tipo ?: 'Normal') == $value)
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                        <span class="text-sm text-gray-700">{{ $label }}</span>
+                    </label>
+                @endforeach
             </div>
             @error('tipo')
-                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
 
+        <!-- Componente Livewire -->
         @livewire('statedropdowns', [
             'selectedMuni' => old('municipio_id', $anuncio->municipio_id),
             'selectedClase' => old('clase_id', $anuncio->clase_id),
@@ -262,265 +228,154 @@
             'localidad' => old('localidad', $anuncio->localidad),
         ])
 
+        <!-- Sección 7: Información adicional -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-                <label class="block text-gray-700 mb-2">Edad</label>
-                <select name="edad" class="form-select w-full @error('edad') border-red-500 @enderror">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Edad</label>
+                <select name="edad" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('edad') border-red-500 @enderror">
                     @for($i = 18; $i <= 99; $i++)
                         <option value="{{ $i }}" @selected(old('edad', $anuncio->edad) == $i)>{{ $i }}</option>
                     @endfor
                 </select>
                 @error('edad')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label class="block text-gray-700 mb-2">Nacionalidad</label>
-                <select name="nacionalidad" class="form-select w-full @error('nacionalidad') border-red-500 @enderror">    
-                    {{-- {{$user}}             --}}
-                    {{-- @foreach($user->paises as $pais)
-                        <option value="{{ $pais }}" @selected(old('nacionalidad', $anuncio->nacionalidad) == $pais)>{{ $pais }}</option>
-                    @endforeach --}}
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nacionalidad</label>
+                <select name="nacionalidad" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('nacionalidad') border-red-500 @enderror">
+                    <!-- Opciones de nacionalidad -->
                 </select>
                 @error('nacionalidad')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label class="block text-gray-700 mb-2">Profesión</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Profesión</label>
                 <input type="text" name="profesion" value="{{ old('profesion', $anuncio->profesion) }}"
-                       class="form-input w-full @error('profesion') border-red-500 @enderror"
-                       placeholder="Profesión">
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('profesion') border-red-500 @enderror"
+                       placeholder="Tu profesión">
                 @error('profesion')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Sección 8: Fechas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            @foreach([
+                'fecha_de_publicacion' => 'Publicación',
+                'fecha_caducidad' => 'Caducidad',
+                'fecha_pausa' => 'Pausa'
+            ] as $field => $label)
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha {{ $label }}</label>
+                    <input type="date" name="{{ $field }}" 
+                           value="{{ old($field, $anuncio->$field ? \Carbon\Carbon::parse($anuncio->$field)->format('Y-m-d') : $anuncio->$field) }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error($field) border-red-500 @enderror">
+                    @error($field)
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endforeach
+            
             <div>
-                <label class="block text-gray-700 mb-2">Fecha de Publicación</label>
-                <input type="date" name="fecha_de_publicacion" 
-                       value="{{ old('fecha_de_publicacion', $anuncio->fecha_de_publicacion ? \Carbon\Carbon::parse($anuncio->fecha_de_publicacion)->format('Y-m-d') : $anuncio->fecha_de_publicacion) }}"
-                       class="form-input w-full @error('fecha_de_publicacion') border-red-500 @enderror">
-                @error('fecha_de_publicacion')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div>
-                <label class="block text-gray-700 mb-2">Fecha de Caducidad</label>
-                <input type="date" name="fecha_caducidad" 
-                       value="{{ old('fecha_caducidad', $anuncio->fecha_caducidad ? \Carbon\Carbon::parse($anuncio->fecha_caducidad)->format('Y-m-d') : $anuncio->fecha_caducidad) }}"
-                       class="form-input w-full @error('fecha_caducidad') border-red-500 @enderror">
-                @error('fecha_caducidad')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div>
-                <label class="block text-gray-700 mb-2">Fecha de Pausa</label>
-                <input type="date" name="fecha_pausa" 
-                       value="{{ old('fecha_pausa', $anuncio->fecha_pausa ? \Carbon\Carbon::parse($anuncio->fecha_pausa)->format('Y-m-d') : $anuncio->fecha_pausa) }}"
-                       class="form-input w-full @error('fecha_pausa') border-red-500 @enderror">
-                @error('fecha_pausa')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div>
-                <label class="block text-gray-700 mb-2">Días Restantes</label>
-                <div class="p-2 bg-gray-100 rounded">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Días restantes</label>
+                <div class="px-3 py-2 bg-gray-100 rounded-md text-center font-medium">
                     {{ $anuncio->dias_restantes() }}
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-                <label class="block text-gray-700 mb-2">GPS</label>
-                <input type="text" name="gps" value="{{ old('gps', $anuncio->gps) }}"
-                       class="form-input w-full @error('gps') border-red-500 @enderror"
-                       placeholder="GPS">
-                @error('gps')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div>
-                <label class="block text-gray-700 mb-2">IP Address</label>
-                <input type="text" name="ip_address" value="{{ old('ip_address', $anuncio->ip_address) }}"
-                       class="form-input w-full @error('ip_address') border-red-500 @enderror"
-                       placeholder="IP Address">
-                @error('ip_address')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div>
-                <label class="block text-gray-700 mb-2">Port</label>
-                <input type="text" name="port" value="{{ old('port', $anuncio->port) }}"
-                       class="form-input w-full @error('port') border-red-500 @enderror"
-                       placeholder="Port">
-                @error('port')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
+        <!-- Sección 9: Tags y características -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            @foreach([
+                'tag_al' => 'Exterior',
+                'tag_in' => 'Interior',
+                'tag_ec' => 'En Casa',
+                'tag_etc' => 'En tu casa'
+            ] as $tagVar => $title)
+                <div>
+                    <p class="text-sm font-medium text-gray-700 mb-2">{{ $title }}</p>
+                    <div class="space-y-2">
+                        @foreach($$tagVar as $tag)
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
+                                       @checked(in_array($tag->id, old('tags', [])))
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <span class="text-sm text-gray-700">{{ $tag->nombre }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+            @endforeach
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+        <!-- Sección 10: Estados -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div>
-                <p class="font-medium text-gray-700 mb-2">Exterior</p>
-                <div class="space-y-1">
-                    @foreach($tag_al as $tag)
-                        <label class="flex items-center">
-                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
-                                   @checked(in_array($tag->id, old('tags', [])))
-                                   class="mr-2">
-                            <span class="text-sm">{{ $tag->nombre }}</span>
+                <p class="text-sm font-medium text-gray-700 mb-2">Estado de pago</p>
+                <div class="flex space-x-4">
+                    @foreach(['No' => 'No', 'Si' => 'Sí'] as $value => $label)
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="estado_pago" value="{{ $value }}" 
+                                   @checked(old('estado_pago', $anuncio->estado_pago ?: 'No') == $value)
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <span class="text-sm text-gray-700">{{ $label }}</span>
                         </label>
                     @endforeach
-                </div>
-                @error('tags')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div>
-                <p class="font-medium text-gray-700 mb-2">Interior</p>
-                <div class="space-y-1">
-                    @foreach($tag_in as $tag)
-                        <label class="flex items-center">
-                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
-                                   @checked(in_array($tag->id, old('tags', [])))
-                                   class="mr-2">
-                            <span class="text-sm">{{ $tag->nombre }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <div>
-                <p class="font-medium text-gray-700 mb-2">En Casa</p>
-                <div class="space-y-1">
-                    @foreach($tag_ec as $tag)
-                        <label class="flex items-center">
-                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
-                                   @checked(in_array($tag->id, old('tags', [])))
-                                   class="mr-2">
-                            <span class="text-sm">{{ $tag->nombre }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <div>
-                <p class="font-medium text-gray-700 mb-2">En tu casa</p>
-                <div class="space-y-1">
-                    @foreach($tag_etc as $tag)
-                        <label class="flex items-center">
-                            <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
-                                   @checked(in_array($tag->id, old('tags', [])))
-                                   class="mr-2">
-                            <span class="text-sm">{{ $tag->nombre }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-
-            <div>
-                <p class="font-medium text-gray-700 mb-2">Estado Pago</p>
-                <div class="space-y-2">
-                    <label class="flex items-center">
-                        <input type="radio" name="estado_pago" value="No" 
-                               @checked(old('estado_pago', $anuncio->estado_pago ?: 'No') == 'No')
-                               class="mr-2">
-                        No
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="estado_pago" value="Si" 
-                               @checked(old('estado_pago', $anuncio->estado_pago) == 'Si')
-                               class="mr-2">
-                        Si
-                    </label>
                 </div>
                 @error('estado_pago')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <p class="font-medium text-gray-700 mb-2">Estado</p>
-                <div class="space-y-2">
-                    <label class="flex items-center text-gray-500">
-                        <input type="radio" name="estado" value="Borrador" 
-                               @checked(old('estado', $anuncio->estado ?: 'Borrador') == 'Borrador')
-                               disabled class="mr-2">
-                        Borrador
-                    </label>
-                    <label class="flex items-center text-gray-500">
-                        <input type="radio" name="estado" value="A_Publicar" 
-                               @checked(old('estado', $anuncio->estado) == 'A_Publicar')
-                               disabled class="mr-2">
-                        A Publicar
-                    </label>
-                    <label class="flex items-center text-gray-500">
-                        <input type="radio" name="estado" value="Publicado" 
-                               @checked(old('estado', $anuncio->estado) == 'Publicado')
-                               disabled class="mr-2">
-                        Publicado
-                    </label>
-                    <label class="flex items-center text-gray-500">
-                        <input type="radio" name="estado" value="Pausado" 
-                               @checked(old('estado', $anuncio->estado) == 'Pausado')
-                               disabled class="mr-2">
-                        Pausado
-                    </label>
-                    <label class="flex items-center text-gray-500">
-                        <input type="radio" name="estado" value="Finalizado" 
-                               @checked(old('estado', $anuncio->estado) == 'Finalizado')
-                               disabled class="mr-2">
-                        Finalizado
-                    </label>
-                    <label class="flex items-center text-gray-500">
-                        <input type="radio" name="estado" value="Suspendido" 
-                               @checked(old('estado', $anuncio->estado) == 'Suspendido')
-                               disabled class="mr-2">
-                        Suspendido
-                    </label>
+                <p class="text-sm font-medium text-gray-700 mb-2">Estado del anuncio</p>
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach([
+                        'Borrador' => 'Borrador',
+                        'A_Publicar' => 'A Publicar',
+                        'Publicado' => 'Publicado',
+                        'Pausado' => 'Pausado',
+                        'Finalizado' => 'Finalizado',
+                        'Suspendido' => 'Suspendido'
+                    ] as $value => $label)
+                        <label class="flex items-center space-x-2 opacity-50">
+                            <input type="radio" name="estado" value="{{ $value }}" 
+                                   @checked(old('estado', $anuncio->estado) == $value) disabled
+                                   class="h-4 w-4 text-gray-500 border-gray-300">
+                            <span class="text-sm text-gray-600">{{ $label }}</span>
+                        </label>
+                    @endforeach
                 </div>
-                @error('estado')
-                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                @enderror
             </div>
         </div>
 
-        <div class="mt-6">
-            <p class="text-sm font-medium text-gray-700 mb-2">¿Autorizas mostrarte en las redes?</p>
-            <div class="flex space-x-4">
-                <label class="flex items-center">
-                    <input type="radio" name="mostrar_en_redes" value="No" 
-                           @checked(old('mostrar_en_redes', $anuncio->mostrar_en_redes ?: 'No') == 'No')
-                           class="mr-2">
-                    No
-                </label>
-                <label class="flex items-center">
-                    <input type="radio" name="mostrar_en_redes" value="Si" 
-                           @checked(old('mostrar_en_redes', $anuncio->mostrar_en_redes) == 'Si')
-                           class="mr-2">
-                    Si
-                </label>
+        <!-- Sección 11: Redes sociales -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+            <p class="text-sm font-medium text-gray-700 mb-3">¿Autorizas mostrarte en redes sociales?</p>
+            <div class="flex space-x-6">
+                @foreach(['No' => 'No', 'Si' => 'Sí'] as $value => $label)
+                    <label class="flex items-center space-x-2">
+                        <input type="radio" name="mostrar_en_redes" value="{{ $value }}" 
+                               @checked(old('mostrar_en_redes', $anuncio->mostrar_en_redes ?: 'No') == $value)
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                        <span class="text-sm text-gray-700">{{ $label }}</span>
+                    </label>
+                @endforeach
             </div>
             @error('mostrar_en_redes')
-                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
 
-        <div class="mt-8">
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                {{ __('Guardar Anuncio') }}
+        <!-- Botón de submit -->
+        <div class="mt-8 flex justify-end">
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-lg shadow-md hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                <i class="fas fa-save mr-2"></i> Guardar cambios
             </button>
         </div>
     </div>

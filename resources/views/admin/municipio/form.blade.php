@@ -1,47 +1,71 @@
-<div class="box box-info padding-1">
-    <div class="box-body">
+<div class="card bg-light p-3 mb-4">
+    <div class="card-body">
 
-        <div class="form-group">
-            {{ Form::label('nombre') }}
-            {{ Form::text('nombre', $municipio->nombre, ['class' => 'form-control' . ($errors->has('nombre') ? ' is-invalid' : ''), 'placeholder' => 'Nombre']) }}
-            {!! $errors->first('nombre', '<div class="invalid-feedback">:message</div>') !!}
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" name="nombre" id="nombre" 
+                   class="form-control @error('nombre') is-invalid @enderror" 
+                   value="{{ old('nombre', $municipio->nombre) }}" 
+                   placeholder="Nombre">
+            @error('nombre')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
-        <div class="form-group">
-            {{ Form::label('slug') }}
-            {{ Form::text('slug', $municipio->slug, ['class' => 'form-control' . ($errors->has('slug') ? ' is-invalid' : ''), 'placeholder' => 'Slug']) }}
-            {!! $errors->first('slug', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
-        <div class="form-group">
-            {!! Form::label('provincia_id', 'Provincia') !!}
-            {!! Form::select('provincia_id', $provincias, $municipio->provincia_id, ['class' => 'form-control']) !!}
 
+        <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" name="slug" id="slug" 
+                   class="form-control @error('slug') is-invalid @enderror" 
+                   value="{{ old('slug', $municipio->slug) }}" 
+                   placeholder="Slug">
+            @error('slug')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="provincia_id" class="form-label">Provincia</label>
+            <select name="provincia_id" id="provincia_id" class="form-control @error('provincia_id') is-invalid @enderror">
+                @foreach($provincias as $id => $nombre)
+                    <option value="{{ $id }}" {{ old('provincia_id', $municipio->provincia_id) == $id ? 'selected' : '' }}>
+                        {{ $nombre }}
+                    </option>
+                @endforeach
+            </select>
             @error('provincia_id')
-                <span class="text-danger">{{ $message }}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
-        <div class="form-group">
-            {!! Form::label('isla_id', 'Isla') !!}
-            {!! Form::select('isla_id', [null => ''] + $islas->toArray(), $municipio->isla_id, ['class' => 'form-control']) !!}
 
+        <div class="mb-3">
+            <label for="isla_id" class="form-label">Isla</label>
+            <select name="isla_id" id="isla_id" class="form-control @error('isla_id') is-invalid @enderror">
+                <option value="">Seleccione una isla</option>
+                @foreach($islas as $id => $nombre)
+                    <option value="{{ $id }}" {{ old('isla_id', $municipio->isla_id) == $id ? 'selected' : '' }}>
+                        {{ $nombre }}
+                    </option>
+                @endforeach
+            </select>
             @error('isla_id')
-                <span class="text-danger">{{ $message }}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
-                 <div class="form-group">
-            {!! Form::label('texto_seo', 'Texto SEO:') !!}
-            {!! Form::textarea('texto_seo', $municipio->texto_seo, [
-                'class' => 'form-control',
-                'placeholder' => 'Texto SEO',
-            ]) !!}
 
+        <div class="mb-3">
+            <label for="texto_seo" class="form-label">Texto SEO</label>
+            <textarea name="texto_seo" id="texto_seo" 
+                      class="form-control @error('texto_seo') is-invalid @enderror"
+                      placeholder="Texto SEO">{{ old('texto_seo', $municipio->texto_seo) }}</textarea>
             @error('texto_seo')
-                <span class="text-danger">{{ $message }}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
-
         </div>
 
     </div>
-    <div class="box-footer mt20">
-        <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+    <div class="card-footer mt-4">
+        <button type="submit" class="btn btn-primary">
+            {{ __('Submit') }}
+        </button>
     </div>
 </div>

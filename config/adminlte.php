@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'guiasexcanarias.com',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -30,8 +30,8 @@ return [
     |
     */
 
-    'use_ico_only' => false,
-    'use_full_favicon' => false,
+    'use_ico_only' => true,
+    'use_full_favicon' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -63,11 +63,11 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<b>Admin</b>',
+    'logo_img' => '/img/logo300.png',
+    'logo_img_class' => 'brand-image  elevation-3',
     'logo_img_xl' => null,
-    'logo_img_xl_class' => 'brand-image-xs',
+    'logo_img_xl_class' => 'brand-image-xs col-xs-2',
     'logo_img_alt' => 'Admin Logo',
 
     /*
@@ -99,10 +99,7 @@ return [
     | Preloader Animation
     |--------------------------------------------------------------------------
     |
-    | Here you can change the preloader animation configuration. Currently, two
-    | modes are supported: 'fullscreen' for a fullscreen preloader animation
-    | and 'cwrapper' to attach the preloader animation into the content-wrapper
-    | element and avoid overlapping it with the sidebars and the top navbar.
+    | Here you can change the preloader animation configuration.
     |
     | For detailed instructions you can look the preloader section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Basic-Configuration
@@ -110,11 +107,10 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
-        'mode' => 'fullscreen',
+        'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'AdminLTE Preloader Image',
+            'path' => '/img/logo300.png',
+            'alt' => 'CANARIASEXCANARIAS',
             'effect' => 'animation__shake',
             'width' => 60,
             'height' => 60,
@@ -196,7 +192,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-dark-danger elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
@@ -257,35 +253,29 @@ return [
     */
 
     'use_route_url' => false,
-    // 'dashboard_url' => 'home',
-    'dashboard_url' => 'anuncios',
+    'dashboard_url' => '/bielsa22admin',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
     'password_reset_url' => 'password/reset',
     'password_email_url' => 'password/email',
     'profile_url' => false,
-    'disable_darkmode_routes' => false,
 
     /*
     |--------------------------------------------------------------------------
-    | Laravel Asset Bundling
+    | Laravel Mix
     |--------------------------------------------------------------------------
     |
-    | Here we can enable the Laravel Asset Bundling option for the admin panel.
-    | Currently, the next modes are supported: 'mix', 'vite' and 'vite_js_only'.
-    | When using 'vite_js_only', it's expected that your CSS is imported using
-    | JavaScript. Typically, in your application's 'resources/js/app.js' file.
-    | If you are not using any of these, leave it as 'false'.
+    | Here we can enable the Laravel Mix option for the admin panel.
     |
-    | For detailed instructions you can look the asset bundling section here:
+    | For detailed instructions you can look the laravel mix section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Other-Configuration
     |
     */
 
-    'laravel_asset_bundling' => false,
-    'laravel_css_path' => 'css/app.css',
-    'laravel_js_path' => 'js/app.js',
+    'enabled_laravel_mix' => false,
+    'laravel_mix_css_path' => 'css/app.css',
+    'laravel_mix_js_path' => 'js/app.js',
 
     /*
     |--------------------------------------------------------------------------
@@ -302,12 +292,12 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'type' => 'navbar-search',
-            'text' => 'search',
+            'type'         => 'navbar-search',
+            'text'         => 'search',
             'topnav_right' => true,
         ],
         [
-            'type' => 'fullscreen-widget',
+            'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
@@ -318,81 +308,137 @@ return [
         ],
         [
             'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+            'url'  => 'admin/blog',
+            'can'  => 'manage-blog',
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
+            'text' => 'Dashboard',
+            'route'  => 'admin.home',
+            'icon' => 'nav-icon fas fa-tachometer-alt',
+            'active' => ['admin/home*'],
+            'can' => 'admin.users.index'
         ],
-        ['header' => 'account_settings'],
+        // [
+        //     'text' => 'Dejar de Supl.',
+        //     'route' => 'admin.user.leaveImpersonate',
+        //     'icon' => 'nav-icon fas fa-tachometer-alt',            
+        // ],           
         [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'Anuncios',
+            'route'  => 'admin.anuncios.index',
+            'icon' => 'fab fa-fw fa-buffer',
+            'active' => ['admin/anuncios*'],
+            'can' => 'admin.anuncios'
         ],
         [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
+            'text' => ' Usuarios',
+            'route'  => 'admin.users.index',
+            'icon' => 'fa fa-user',
+            'can' => 'admin.users.index',
+            'active' => ['admin/users*'],
+        ],      
         [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
+            'text'    => 'Datos Generales',
+            'icon'    => 'fas fa-fw fa-share',
             'submenu' => [
                 [
-                    'text' => 'level_one',
-                    'url' => '#',
+                    'text' => 'Categorías',
+                    'route'  => 'categorias.index',
+                    'can' => 'admin.categorias.index',
+                    'active' => ['admin/categorias*'],
                 ],
                 [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
+                    'text' => 'Clases',
+                    'route'  => 'clases.index',
+                    'can' => 'admin.clases.index',
+                    'active' => ['admin/clases*'],
                 ],
                 [
-                    'text' => 'level_one',
-                    'url' => '#',
+                    'text' => 'Forma de Pagos',
+                    'route'  => 'formapagos.index',
+                    'can' => 'admin.formapagos.index',
+                    'active' => ['admin/formapagos*'],
                 ],
+                [
+                    'text' => 'Lugares de Atención',
+                    'route'  => 'lugars.index',
+                    'can' => 'admin.lugares.index',
+                    'active' => ['admin/lugares*'],
+                ],
+                [
+                    'text' => 'Tags',
+                    'route'  => 'tags.index',
+                    'can' => 'admin.tags.index',
+                    'active' => ['admin/tags*'],
+                ],
+
             ],
         ],
-        ['header' => 'labels'],
         [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
+            'text'    => 'Zonas y Planes',
+            'icon'    => 'fas fa-fw fa-share',
+            'submenu' => [
+                [
+                    'text' => 'Provincias',
+                    'route'  => 'provincias.index',
+                    'can' => 'admin.provincias.index',
+                    'active' => ['admin/provincias*'],
+                ],
+                [
+                    'text' => 'Municipios',
+                    'route'  => 'municipios.index',
+                    'can' => 'admin.municipios.index',
+                    'active' => ['admin/municipios*'],
+                ],
+                // [
+                //     'text' => 'Zonas',
+                //     'route'  => 'zones.index',
+                //     'can' => 'admin.zones.index',
+                //     'active' => ['admin/zones*'],
+                    
+                // ],
+                [
+                    'text' => 'Planes',
+                    'route'  => 'planes.index',
+                    'can' => 'admin.planes.index',
+                    'active' => ['admin/planes*'],
+                ],                
+            ],
         ],
         [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
+            'text'    => 'Seguridad',
+            'icon'    => 'fas fa-fw fa-share',
+            'submenu' => [
+                [
+                    'text' => 'Usuarios',
+                    'route'  => 'admin.users.index',
+                    'can' => 'admin.users.index',
+                    'active' => ['admin/users*'],
+                ],
+                [
+                    'text' => 'Roles',
+                    'route'  => 'admin.roles.index',
+                    'can' => 'admin.roles.index',
+                    'active' => ['admin/roles*'],
+                ],                
+            ],
         ],
         [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
+            'text' => 'Pagos',
+            'route'  => 'pagos.index',
+            'icon' => 'nav-icon fas fa-file-contract',
+            'active' => ['admin/pagos*'],
+            
         ],
+        [
+            'text' => 'SMS Notificaciones',
+            'route'  => 'smsnotifications.index',
+            'icon' => 'fa-regular fa-message',
+            'active' => ['admin/smsnotifications*'],
+
+        ],
+        
+        
     ],
 
     /*
@@ -431,7 +477,7 @@ return [
 
     'plugins' => [
         'Datatables' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -476,7 +522,7 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -547,5 +593,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];

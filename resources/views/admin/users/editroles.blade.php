@@ -3,44 +3,57 @@
 @section('title', 'Gmarket ADMIN PANEL')
 
 @section('content_header')
-    <h1><a href="{{ route('admin.users.index') }}" class=" btn btn-lg mr-1">
-        <i class="far fa-arrow-alt-circle-left"></i> Listado </a> Asignar Roles</h1>
-@stop
-
-
-
-@section('content')
-
-    @if (session('info'))
-        <div class="alert alert-success">
-            <strong>{{ session('info') }}</strong>
-        </div>
-    @endif
-
-
-    <div class="card">
-        <div class="card-body">
-            <div class="form-group">
-                <p class="h5">Nombre</p>
-                <p class="form-control">{{ $user->name }}</p>
-            </div>
-            <h2 class="h5">Listado de Roles</h2>
-            {!! Form::model($user, ['route' => ['admin.users.updateroles', $user], 'method' => 'put']) !!}
-
-                @foreach ($roles as $role)
-                    <div>
-                        <label>
-                            {!! Form::checkbox('roles[]', $role->id, null, ['class'=>'mr-1']) !!}
-                            {{ $role->name}}
-                        </label>
-                    </div>
-                @endforeach
-
-            
-            {!! Form::submit('Asignar Rol', ['class' => 'btn btn-primary mt-2']) !!}
-
-            {!! Form::close() !!}
-        </div>
+    <div class="d-flex align-items-center">
+        <a href="{{ route('admin.users.index') }}" class="btn btn-lg mr-3">
+            <i class="far fa-arrow-alt-circle-left"></i> Listado
+        </a>
+        <h1 class="m-0">Asignar Roles</h1>
     </div>
 @stop
 
+@section('content')
+    @if (session('info'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ session('info') }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label h5">Nombre</label>
+                <div class="form-control-plaintext">{{ $user->name }}</div>
+            </div>
+
+            <h2 class="h5 mb-3">Listado de Roles</h2>
+            
+            <form action="{{ route('admin.users.updateroles', $user) }}" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    @foreach ($roles as $role)
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       name="roles[]" 
+                                       id="role_{{ $role->id }}" 
+                                       value="{{ $role->id }}"
+                                       {{ $user->roles->contains($role->id) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="role_{{ $role->id }}">
+                                    {{ $role->name }}
+                                </label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-user-tag"></i> Asignar Rol
+                </button>
+            </form>
+        </div>
+    </div>
+@stop

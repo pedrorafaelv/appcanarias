@@ -1,0 +1,33 @@
+/* Form Container */
+.form-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+}
+
+/* Form Section */
+.form-section {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+/* Form Title */
+.form-title {
+    color: #1a365d;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Radio Group */
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}

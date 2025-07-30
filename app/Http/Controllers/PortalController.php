@@ -355,7 +355,6 @@ class PortalController extends Controller
         $categorias = Categoria::all()->sortBy('nombre');
         $municipios = $provincia->municipios_anunciados();
         $prov_laspalmas = $this->set_prov_las_palmas();
-
         $prov_tenerife = $this->set_prov_tenerife();
         $categoria     = $this->set_categoria();
 
@@ -544,7 +543,7 @@ class PortalController extends Controller
         SEOMeta::addKeyword($anuncio->profesion);
         SEOMeta::addKeyword($anuncio->titulo);
         SEOMeta::addKeyword($anuncio->nombre);
-        SEOMeta::addKeyword(['escort', 'escort España', 'acompañantes', 'españa', 'acompañantes españa', 'amistad', 'conocer gente']);
+        SEOMeta::addKeyword(['escort', 'escort España', 'acompañantes', 'españa', 'acompañantes españa', 'amistad', 'conocer gente', "no_puta"]);
         $clase = null;
         $anuncios_oro = [];
         $anuncios_plata = [];

@@ -313,10 +313,12 @@ class UserController extends Controller
     {
         //$user->anuncios;
 
-        request()->validate(Anuncio::$rules);
+        // request()->validate(Anuncio::$rules);
 
 //  dd($request->all());
-        $anuncio = Anuncio::create($request->all());
+        // $anuncio = Anuncio::create($request->all());
+            $anuncio = Anuncio::create($request->validated());
+
         if (!is_null($request->fecha_de_publicacion) && is_null($request->fecha_de_caducidad)) {
             $fecha_publi = Carbon::parse($request->fecha_de_publicacion);
             $hora_actual = $fecha_publi->format('H');

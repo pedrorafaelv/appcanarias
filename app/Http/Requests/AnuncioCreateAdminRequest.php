@@ -25,7 +25,7 @@ class AnuncioCreateAdminRequest extends FormRequest
      */
     public function rules()
     {
-        dd($this->all());
+        // dd($this->all());
         $user = $this->user;
         return [
             //'nombre' => 'required||unique:anuncios,nombre,user_id,deleted_at,NULL',

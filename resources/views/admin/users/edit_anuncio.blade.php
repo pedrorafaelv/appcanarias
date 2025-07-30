@@ -15,12 +15,12 @@
         @endif
 
         <div class="row mb-4">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <p class="mb-1"><strong>Usuario:</strong> #{{ $user->id }} - {{ $user->name }}</p>
                 <p class="mb-1"><strong>Contacto:</strong> {{ $user->telefono }}</p>
                 <p class="mb-1"><strong>Email:</strong> {{ $user->email }}</p>
             </div>
-            <div class="col-md-6 text-right">
+            <div class="col-md-4 text-right">
                 <div class="btn-group">
                     <a href="{{ route('admin.anuncio.registrar_pago', $anuncio) }}" 
                        class="btn btn-success">
@@ -37,15 +37,15 @@
         <div class="row mb-4">
             <div class="col-md-6">
                 <x-adminlte-info-box title="Imágenes a Cargar" 
-                                    text="{{ $anuncio->imagenes_pendientes() }}" 
-                                    icon="fas fa-cloud-upload-alt" 
-                                    theme="info"/>
+                    text="{{ $anuncio->imagenes_pendientes() }}" 
+                    icon="fas fa-cloud-upload-alt" 
+                    theme="info"/>
             </div>
             <div class="col-md-6">
                 <x-adminlte-info-box title="Imágenes a Verificar" 
-                                    text="{{ $anuncio->cantidad_img_verificar() }}" 
-                                    icon="fas fa-check-circle" 
-                                    theme="warning"/>
+                    text="{{ $anuncio->cantidad_img_verificar() }}" 
+                    icon="fas fa-check-circle" 
+                    theme="warning"/>
             </div>
         </div>
 
@@ -57,9 +57,10 @@
             <div class="col-md-4">
                 <x-adminlte-card title="Portada" theme="purple" collapsible>
                     @if($anuncio->portada)
-                        <a href="{{ Storage::url('anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
+                        <a href="{{(config('app.url').'/images/anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
                            data-toggle="lightbox">
-                            <img src="{{ Storage::url('anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
+                            {{-- <img src="{{ Storage::url('anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}"  --}}
+                            <img src="{{config('app.url'). ('/images/anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
                                  class="img-fluid mb-2 rounded">
                         </a>
                         <p class="text-muted">Ubicación: {{ $anuncio->portada->position }}</p>
@@ -73,7 +74,7 @@
                 @else
                     <x-adminlte-card title="Video" theme="teal">
                         <video controls class="w-100 rounded">
-                            <source src="{{ Storage::url('videos/anuncios/'.$anuncio->id.'/'.$anuncio->video) }}" 
+                            <source src="{{ config('app.url').('/videos/anuncios/'.$anuncio->id.'/'.$anuncio->video) }}" 
                                     type="video/mp4">
                         </video>
                         <p class="mt-2">Estado: {{ $anuncio->estado_video }}</p>
@@ -176,12 +177,12 @@
 
 @section('css')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css">
-    
+    {{-- <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"> --}}
+        <link rel="stylesheet" href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
+
     <style>
         .image-preview {
             max-height: 200px;
@@ -191,27 +192,33 @@
             margin-right: 5px;
             margin-bottom: 5px;
         }
-    </style>
+        </style>
 @stop
 
 @section('js')
-    @vite(['resources/js/app.js'])
-    
-    <!-- DataTables y plugins -->
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
-    
-    <!-- Dropzone -->
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    
-    <!-- CKEditor -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
-    
+@vite(['resources/js/app.js'])
+
+<!-- DataTables y plugins -->
+<script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Dropzone -->
+    <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
+
+{{-- <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script> --}}
+
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+{{-- <script src="https://cdn.ckeditor.com/ckeditor5/34.2.0/classic/ckeditor.js"></script> --}}
+
     <script>
+          Dropzone.autoDiscover = false;
+
         // Inicialización de DataTables
         document.addEventListener('DOMContentLoaded', function() {
             // Configuración común para ambas tablas
@@ -275,18 +282,18 @@
             });
             
             // Inicialización de CKEditor
-            ClassicEditor
-                .create(document.querySelector('#presentacion_aux'))
-                .catch(error => {
-                    console.error(error);
-                });
+            // ClassicEditor
+            //     .create(document.querySelector('#presentacion_aux'))
+            //     .catch(error => {
+            //         console.error(error);
+            //     });
             
-            ClassicEditor
-                .create(document.querySelector('#horario'))
-                .catch(error => {
-                    console.error(error);
-                });
-            
+            // ClassicEditor
+            //     .create(document.querySelector('#horario'))
+            //     .catch(error => {
+            //         console.error(error);
+            //     });
+           
             // Configuración de Dropzone
             if (document.getElementById('file-dropzone')) {
                 const dropzone = new Dropzone('#file-dropzone', {
@@ -299,7 +306,7 @@
                     acceptedFiles: 'image/jpeg,image/png',
                     addRemoveLinks: true,
                     dictRemoveFile: "Eliminar",
-                    maxFiles: {{ 10 - $anuncio->imagens()->count() }},
+                    maxFiles: {{ 14 - $anuncio->imagens()->count() }},
                     init: function() {
                         this.on('success', function(file, response) {
                             if (response.result) {
@@ -329,5 +336,56 @@
                 });
             }
         });
+
+    const initCKEditor = (selector) => {
+        const el = document.querySelector(selector);
+        if (!el || el.classList.contains('ck-editor__editable')) return;
+
+        ClassicEditor
+            .create(el)
+            .then(editor => {
+                editor.model.document.on('change:data', () => {
+                    // Si usas wire:model en el campo, actualiza el valor en Livewire
+                    const event = new CustomEvent('ckeditor-update', {
+                        detail: {
+                            id: el.getAttribute('id'),
+                            value: editor.getData()
+                        }
+                    });
+                    window.dispatchEvent(event);
+                });
+            })
+            .catch(error => {
+                console.error(`Error inicializando CKEditor en ${selector}:`, error);
+            });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initCKEditor('#descripcion');
+        initCKEditor('#presentacion_aux');
+        initCKEditor('#horario');
+    });
+
+    // Livewire 3 hook: se dispara después de cualquier actualización del DOM
+    document.addEventListener('livewire:init', () => {
+        Livewire.hook('commit', ({ succeed }) => {
+            succeed(() => {
+                initCKEditor('#descripcion');
+                initCKEditor('#presentacion_aux');
+                initCKEditor('#horario');
+            });
+        });
+    });
+
+    // Comunicación CKEditor → Livewire (si usas wire:model en los campos)
+    window.addEventListener('ckeditor-update', e => {
+        const { id, value } = e.detail;
+        const el = document.getElementById(id);
+        if (el && el.__livewire_input_name) {
+            Livewire.find(el.closest('[wire\\:id]').getAttribute('wire:id'))
+                .set(el.__livewire_input_name, value);
+        }
+    }); 
+
     </script>
 @stop

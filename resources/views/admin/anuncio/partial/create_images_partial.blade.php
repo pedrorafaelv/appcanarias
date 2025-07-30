@@ -22,7 +22,16 @@
         <div class="container">
 
 
-            <form class="dropzone" drop-zone="" id="file-dropzone"></form>
+           <form class="dropzone border-2 border-dashed border-gray-300 rounded-lg p-6 min-h-[200px] flex flex-col items-center justify-center mb-6" id="file-dropzone">
+            <div class="dz-message text-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p class="text-lg font-medium">Arrastra tus imágenes aquí</p>
+                <p class="text-sm">o haz clic para seleccionar archivos</p>
+                <p class="text-xs mt-2">Formatos aceptados: JPG, JPEG, PNG</p>
+            </div>
+        </form>
 
 
 

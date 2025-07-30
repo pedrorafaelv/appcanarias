@@ -1,61 +1,106 @@
-<div class="box box-info padding-1">
-    <div class="box-body">
+<div class="card bg-light p-3 mb-4">
+    <div class="card-body">
 
-        <div class="form-group">
-            {{ Form::label('nombre') }}
-            {{ Form::text('nombre', $plane->nombre, ['class' => 'form-control' . ($errors->has('nombre') ? ' is-invalid' : ''), 'placeholder' => 'Nombre']) }}
-            {!! $errors->first('nombre', '<div class="invalid-feedback">:message</div>') !!}
+        <!-- Campo Nombre -->
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" name="nombre" id="nombre" 
+                   class="form-control @error('nombre') is-invalid @enderror" 
+                   value="{{ old('nombre', $plane->nombre) }}" 
+                   placeholder="Nombre">
+            @error('nombre')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
         </div>
-        <div class="form-group">
-            {{ Form::label('slug') }}
-            {{ Form::text('slug', $plane->slug, ['class' => 'form-control' . ($errors->has('slug') ? ' is-invalid' : ''), 'placeholder' => 'Slug']) }}
-            {!! $errors->first('slug', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
-        <div class="form-group">
-            {!! Form::label('clase_id', 'Clase') !!}
-            {!! Form::select('clase_id', $clases, $plane->clase_id, ['class' => 'form-control']) !!}
 
+        <!-- Campo Slug -->
+        <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" name="slug" id="slug" 
+                   class="form-control @error('slug') is-invalid @enderror" 
+                   value="{{ old('slug', $plane->slug) }}" 
+                   placeholder="Slug">
+            @error('slug')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Selector Clase -->
+        <div class="mb-3">
+            <label for="clase_id" class="form-label">Clase</label>
+            <select name="clase_id" id="clase_id" class="form-control @error('clase_id') is-invalid @enderror">
+                @foreach($clases as $id => $nombre)
+                    <option value="{{ $id }}" {{ old('clase_id', $plane->clase_id) == $id ? 'selected' : '' }}>
+                        {{ $nombre }}
+                    </option>
+                @endforeach
+            </select>
             @error('clase_id')
-                <span class="text-danger">{{ $message }}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
-        <div class="form-group">
-            {!! Form::label('categoria_id', 'Categoria') !!}
-            {!! Form::select('categoria_id', $categorias, $plane->categoria_id, ['class' => 'form-control']) !!}
-
+        <!-- Selector Categoría -->
+        <div class="mb-3">
+            <label for="categoria_id" class="form-label">Categoria</label>
+            <select name="categoria_id" id="categoria_id" class="form-control @error('categoria_id') is-invalid @enderror">
+                @foreach($categorias as $id => $nombre)
+                    <option value="{{ $id }}" {{ old('categoria_id', $plane->categoria_id) == $id ? 'selected' : '' }}>
+                        {{ $nombre }}
+                    </option>
+                @endforeach
+            </select>
             @error('categoria_id')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
-        </div>
-        <div class="form-group">
-            {{ Form::label('dias') }}
-            {{ Form::number('dias', $plane->dias, ['class' => 'form-control' . ($errors->has('dias') ? ' is-invalid' : ''), 'placeholder' => 'Dias']) }}
-            {!! $errors->first('dias', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
-        <div class="form-group">
-            {{ Form::label('precio') }}
-            {{ Form::text('precio', $plane->precio, ['class' => 'form-control' . ($errors->has('precio') ? ' is-invalid' : ''), 'placeholder' => 'Precio']) }}
-            {!! $errors->first('precio', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
-        <div class="form-group col-lg-3">
-            <p class="font-weight-bold">Interno</p>
-            <label class="mr-2">
-                {!! Form::radio('interno', 'No', $plane->interno == '' ? true :  $plane->interno == 'No') !!}
-                No
-            </label>
-            <label class="mr-2">
-                {!! Form::radio('interno', 'Si', $plane->interno == 'Si') !!}
-                Si
-            </label>
-            @error('interno')
-                <span class="text-danger">{{ $message }}</span>
+                <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
+        <!-- Campo Días -->
+        <div class="mb-3">
+            <label for="dias" class="form-label">Días</label>
+            <input type="number" name="dias" id="dias" 
+                   class="form-control @error('dias') is-invalid @enderror" 
+                   value="{{ old('dias', $plane->dias) }}" 
+                   placeholder="Días">
+            @error('dias')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Campo Precio -->
+        <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <input type="text" name="precio" id="precio" 
+                   class="form-control @error('precio') is-invalid @enderror" 
+                   value="{{ old('precio', $plane->precio) }}" 
+                   placeholder="Precio">
+            @error('precio')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Radio Interno -->
+        <div class="mb-3 col-lg-3">
+            <p class="fw-bold">Interno</p>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="interno" id="interno_no" 
+                       value="No" {{ old('interno', $plane->interno ?: 'No') == 'No' ? 'checked' : '' }}>
+                <label class="form-check-label" for="interno_no">No</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="interno" id="interno_si" 
+                       value="Si" {{ old('interno', $plane->interno) == 'Si' ? 'checked' : '' }}>
+                <label class="form-check-label" for="interno_si">Si</label>
+            </div>
+            @error('interno')
+                <div class="invalid-feedback d-block">{{ $message }}</div>
+            @enderror
+        </div>
 
     </div>
-    <div class="box-footer mt20">
-        <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
+    <div class="card-footer mt-4">
+        <button type="submit" class="btn btn-primary">
+            {{ __('Submit') }}
+        </button>
     </div>
 </div>
