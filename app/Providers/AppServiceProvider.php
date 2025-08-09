@@ -16,6 +16,16 @@ class AppServiceProvider extends ServiceProvider
             return config('app.public_prefix');
         });
     }
+
+
+//    public function boot()
+// {
+//     Paginator::useBootstrap();
+//     Livewire::setUpdateRoute(function ($handle) {
+//         return Route::post('/livewire/update', $handle);
+//     });
+// }
+
 }
 
 // namespace App\Providers;

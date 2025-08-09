@@ -8,9 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {!! SEO::generate() !!}
 
-
-
-
     <link href="https://cdn.jsdelivr.net/npm/daisyui@2.31.0/dist/full.css" rel="stylesheet" type="text/css" />
     <!--Replace with your tailwind.css once created-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -156,7 +153,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3  gap-4 ">
 
-
+ {{-- {{config('app_url')}} --}}
             @foreach ($categorias as $categoria)
                 <div class="card  bg-base-100 shadow-xl hover:shadow-md">
 

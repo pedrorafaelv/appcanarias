@@ -117,13 +117,13 @@
 
             @if (is_null(session('muniSelec')))
                 <div class="my-10">
-                    <span class="text-bold text-lg"> <strong> Las mejores acompa���antes para tus encuentros en
+                    <span class="text-bold text-lg"> <strong> Las mejores acomp&ntilde;antes para tus encuentros en
                             {{ $provincia->nombre }}</strong></span>
                 </div>
                 {!!$provincia->texto_seo!!}
             @else
                 <div class="my-10">
-                    <span class="text-bold text-lg"> Las mejores acompa���antes para tus encuentros en
+                    <span class="text-bold text-lg"> Las mejores acomp&ntilde;antes para tus encuentros en
                         {{ $municipio->nombre }}</span>
                 </div>
                 {!! $municipio->texto_seo !!}

@@ -31,9 +31,9 @@ class Statedropdowns extends Component
 
 
 
-    public function mount(  $selectedMuni = null, $selectedPlane, $selectedCategoria, $precio, $dias, $localidad, $selectedClase, $selectedProvincia = null)
+    public function mount( $selectedMuni = null, $selectedPlane, $selectedCategoria, $precio, $dias, $localidad, $selectedClase, $selectedProvincia = null)
     {
-
+        // dd($anuncio);
         $this->precio = $precio;
         $this->dias = $dias;
         $this->localidad = $localidad;

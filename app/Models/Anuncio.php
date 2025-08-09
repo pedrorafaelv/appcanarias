@@ -431,5 +431,10 @@ class Anuncio extends Model
     //     return $anuncios;
     // }
 
-
+   public function scopeSearch($query, $search)
+{
+    return $query->where('nombre', 'like', "%{$search}%")
+        ->orWhere('estado', 'like', "%{$search}%")
+        ->orWhere('id', 'like', "%{$search}%");
+}
 }

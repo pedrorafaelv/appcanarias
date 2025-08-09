@@ -34,28 +34,23 @@
                             <p>{{ $message }}</p>
                         </div>
                     @endif
-
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id='roles' class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
-                                        <th>No</th>
-                                        
+                                        <th>No</th>                                   
 										<th>Nombre</th>
 										<th>Slug</th>
-
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($categorias as $categoria)
                                         <tr>
-                                            <td>{{ $categoria->id }}</td>
-                                            
+                                            <td>{{ $categoria->id }}</td>                       
 											<td>{{ $categoria->nombre }}</td>
 											<td>{{ $categoria->slug }}</td>
-
                                             <td>
                                                 <form action="{{ route('categorias.destroy',$categoria) }}" method="POST">
                                                   

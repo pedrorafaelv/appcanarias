@@ -85,7 +85,7 @@
         <!-- Campo Fecha Transacción (editable) -->
         <div class="mb-3">
             <label for="fecha_transac" class="form-label">Fecha Transac</label>
-            <input type="text" name="fecha_transac" id="fecha_transac" 
+            <input type="date" name="fecha_transac" id="fecha_transac" 
                    class="form-control @error('fecha_transac') is-invalid @enderror" 
                    value="{{ old('fecha_transac', $pago->fecha_transac) }}" 
                    placeholder="Fecha Transac">

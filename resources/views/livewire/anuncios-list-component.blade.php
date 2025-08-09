@@ -1,111 +1,126 @@
+@livewireScripts
 <div>
-
-    <div class="row">
-        <div class="form-group px-3 col-lg-1">
-            <select name='mostrar_cantidad' id='mostrar_cantidad' wire:model='mostrar_cantidad' class='form-control'>
-                @foreach ([10, 25, 50, 100] as $cantidad)
-                    <option value="{{ $cantidad }}">{{ $cantidad }}</option>
-                @endforeach
+    <!-- Controles de búsqueda y paginación -->
+    <div class="row mb-3">
+        <div class="col-md-2">
+            <select wire:model="perPage" class="form-control form-control-sm">
+                <option value="10">10 por página</option>
+                <option value="25">25 por página</option>
+                <option value="50">50 por página</option>
+                <option value="100">100 por página</option>
             </select>
         </div>
-        <div class='form-group col-lg-11 w-100'>
-            <input type='text' class='form-control' placeholder='Buscar por términos---> Edad, Provincia, Nombre, etc'
-                wire:model='search' />
+        <div class="col-md-10">
+            <input 
+            type="text" 
+            class="form-control form-control-sm" 
+            placeholder="Buscar por ID, nombre, estado..." 
+            wire:model.debounce.500ms="search"
+            >
         </div>
-       
     </div>
-     <div class='form-group '> {{ $anuncios->links() }}</div>
+    
+    <!-- Tabla de resultados -->
     <div class="table-responsive">
-
-
-        <table id='listanuncios' class="table ">
-            <thead>
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="thead-light">
                 <tr>
-                    <th>id</th>
-                    <th>User</th>
-                    <th wire:click="order('fecha_de_publicacion')" style='	cursor: pointer;'>Publ.</th>
-                    <th wire:click="order('fecha_caducidad')" style='	cursor: pointer;'>Vence</th>
+                    <th wire:click="sortBy('id')" style="cursor: pointer;">
+                        ID 
+                        @if($sortField === 'id')
+                        @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                        @endif
+                    </th>
+                    <th wire:click="sortBy('nombre')" style="cursor: pointer;">
+                        Nombre
+                        @if($sortField === 'nombre')
+                        @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                        @endif
+                    </th>
+                    <th wire:click="sortBy('fecha_de_publicacion')" style="cursor: pointer;">
+                        Publicación
+                        @if($sortField === 'fecha_de_publicacion')
+                        @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                        @endif
+                    </th>
+                    <th wire:click="sortBy('fecha_caducidad')" style="cursor: pointer;">
+                        Vencimiento
+                        @if($sortField === 'fecha_caducidad')
+                        @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                        @endif
+                    </th>
                     <th>Clase</th>
-                    <th>Categoria</th>
+                    <th>Categoría</th>
                     <th>Zona</th>
                     <th>Plan</th>
-                    <th wire:click="order('estado')" style='	cursor: pointer;'>Estado</th>
-                    {{-- <th>Destacado</th> --}}
-                    {{-- <th wire:click="order('verificacion')" style='	cursor: pointer;'>Verificado </th> --}}
-                    <th> Ver</th>
-                    <th> Eliminar</th>
+                    <th wire:click="sortBy('estado')" style="cursor: pointer;">
+                        Estado
+                        @if($sortField === 'estado')
+                        @if($sortDirection === 'asc') ↑ @else ↓ @endif
+                        @endif
+                    </th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
+                @forelse($anuncios as $anuncio)
                 @php
-                    
-                    $today = \Carbon\Carbon::now();
-                    $hoy = $today->toDateString();
-                    $tres_dias = $today->addDays(3);
-                @endphp
-                @foreach ($anuncios as $anuncio)
-                    @php
-                        $color = null;
+                        // Lógica para colores de fondo
+                        $bgColor = '';
+                        $today = now();
+                        $tresDias = now()->addDays(3);
+                        
                         if ($anuncio->estado == 'Finalizado') {
-                            $color = '#FABFBD'; //FBD3B6 FABFBD
-                        } else {
-                            //verifico si está a menos de 3 días para vencer
-                            if (!is_null($anuncio->fecha_caducidad)) {
-                                if ($anuncio->fecha_caducidad < $hoy) {
-                                    $color = '#FE362F';
-                                } else {
-                                    if ($anuncio->fecha_caducidad <= $tres_dias) {
-                                        $color = '#FBD3B6';
-                                    }
-                                }
-                            }
+                            $bgColor = 'background-color: #FABFBD';
+                        } elseif ($anuncio->fecha_caducidad && $anuncio->fecha_caducidad < $today) {
+                            $bgColor = 'background-color: #FE362F';
+                        } elseif ($anuncio->fecha_caducidad && $anuncio->fecha_caducidad <= $tresDias) {
+                            $bgColor = 'background-color: #FBD3B6';
                         }
-                    @endphp
-                    <tr bgcolor='{{ $color }}'>
+                        @endphp
+                    <tr style="{{ $bgColor }}">
                         <td>{{ $anuncio->id }}</td>
-                        <td @if ($anuncio->user) title="{{ $anuncio->user->name }} - {{ $anuncio->user->email }}" @endif>
-                            {{ $anuncio->nombre }}</td>
-                        {{-- <td @if ($anuncio->user) title="{{ $anuncio->user->email }}" @endif>
-                            @if ($anuncio->user)
-                                {{ $anuncio->user->name }}
-                            @else
-                                N/D
-                            @endif --}}
-                        </td>
+                        <td>{{ $anuncio->nombre }}</td>
                         <td>{{ $anuncio->fecha_de_publicacion ? date('d-m-Y', strtotime($anuncio->fecha_de_publicacion)) : '' }}
-                        </td>
+                            {{-- <td>{{ optional($anuncio->fecha_de_publicacion)->format('d-m-Y') }}</td> --}}
                         <td>{{ $anuncio->fecha_caducidad ? date('d-m-Y', strtotime($anuncio->fecha_caducidad)) : '' }}
-                        </td>
-                        <td>{{ $anuncio->clase ? $anuncio->clase->nombre : 'N/D' }}</td>
-                        <td>{{ $anuncio->categoria ? $anuncio->categoria->nombre : 'N/D' }}</td>
+                        {{-- <td>{{ optional($anuncio->fecha_caducidad)->format('d-m-Y') }}</td> --}}
+                        <td>{{ $anuncio->clase->nombre ?? 'N/D' }}</td>
+                        <td>{{ $anuncio->categoria->nombre ?? 'N/D' }}</td>
+                        <td>{{ $anuncio->localidad }}</td>
+                        <td>{{ $anuncio->plane->nombre ?? 'N/D' }}</td>
+                        <td>{{ $anuncio->estado }}</td>
                         <td>
-                            {{ $anuncio->localidad }}</td>
-                        <td
-                            title="{{ $anuncio->categoria ? $anuncio->categoria->nombre : 'N/D'  }} {{ $anuncio->clase ? $anuncio->clase->nombre : 'N/D' }} Días: {{ $anuncio->dias }}  €:{{ $anuncio->precio }}">
-                            {{ $anuncio->plane ? $anuncio->plane->nombre : 'N/D' }}</td>
-                        <td>
-                            {{-- @livewire('anuncio-estado-component', ['anuncio' => $anuncio], key($anuncio->id)) --}}
-                            {{ $anuncio->estado }}
-                        </td>
-
-                        <td>
-                            <a class="btn btn-info btn-sm ml-4"
-                                href="{{ route('admin.users.edit_anuncio', $anuncio) }}">
-                                Ver
+                            <a href="{{ route('admin.users.edit_anuncio', $anuncio) }}" 
+                               class="btn btn-sm btn-info"
+                               title="Ver detalles">
+                                <i class="fas fa-eye"></i>
                             </a>
-                        </td>
-                        <td>
-                            @livewire('anuncio-quitar-component', compact('anuncio'), key($anuncio->id . time()))
-
+                            @livewire('anuncio-quitar-component', ['anuncio' => $anuncio], key('delete-'.$anuncio->id))
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="10" class="text-center py-4">
+                            No se encontraron anuncios que coincidan con tu búsqueda
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
-
-
-
-        <div> {{ $anuncios->links() }}</div>
     </div>
 
+    <!-- Paginación -->
+    <div class="row mt-3">
+        <div class="col-12">
+            {{ $anuncios->links() }}
+        </div>
+    </div>
+
+    <!-- Leyenda de colores -->
+    <div class="mt-3 small">
+        <span class="badge mr-2" style="background-color: #FABFBD">Finalizado</span>
+        <span class="badge mr-2" style="background-color: #FE362F">Publicación vencida</span>
+        <span class="badge" style="background-color: #FBD3B6">Por vencer (72h)</span>
+    </div>
 </div>

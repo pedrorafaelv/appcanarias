@@ -16,10 +16,8 @@ use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\OpenGraph;
 use Artesaos\SEOTools\Facades\TwitterCard;
 use Artesaos\SEOTools\Facades\JsonLd;
-// OR with multi
 use Artesaos\SEOTools\Facades\JsonLdMulti;
 
-// OR
 use Artesaos\SEOTools\Facades\SEOTools;
 
 
@@ -87,20 +85,6 @@ class PortalController extends Controller
             $prov_tenerife = Provincia::where('nombre', 'like', 'S.C. Tenerife%')->first();
             Cache::put('prov_tenerife', $prov_tenerife, 600);
         }
-
-
-        // if (Cache::has('provincias2')) {
-        //     $provincias = Cache::get('provincias');
-        // } else {
-        //     $provincias = Provincia::selectRaw('provincias.* , SUM(if(anuncios.estado = "Publicado" and anuncios.verificacion = "Si" , 1, 0)) as cant_anun')
-        //         ->leftjoin('anuncios', 'provincias.id', '=', 'anuncios.provincia_id')
-        //         ->whereNotIn('provincias.id', [$prov_tenerife->id, $prov_valencia->id, $prov_laspalmas->id, $prov_barcelona->id, $prov_madrid->id])
-        //         ->groupBy('provincias.id')
-        //         ->orderByRaw('cant_anun desc')
-        //         ->get();
-        //     Cache::put('provincias', $provincias, 1800);
-        // }
-
 
         if (Cache::has('categorias2')) {
             $categorias = Cache::get('categorias');
@@ -185,7 +169,6 @@ class PortalController extends Controller
 
     public function index(Provincia $provincia, Categoria $categoria = null)
     {
-        //dd(session('provinciaSel'));
         //session()->put('provinciaSel', $provincia->id);
 
         // if (!is_null(session('provinciaSel'))) {
@@ -197,7 +180,6 @@ class PortalController extends Controller
         #Meto las provincias en cache cada una en su variable
         $municipios = [];
         $municipio = null;
-
         if (Cache::has('prov_laspalmas')) {
             $prov_laspalmas = Cache::get('prov_laspalmas');
         } else {
@@ -250,7 +232,7 @@ class PortalController extends Controller
         SEOMeta::addKeyword([
             'guiasexcanarias', 'excluiva', 'excluivas canarias', 'canarias exclusivas', 'españa exclusivas', 'guia sex canarias', 'giasex canarias', 'chicos', 'excluivas españa', 'escort', 'escort españa', 'canarias', 'masajistas', 'masajes canarias', 'masajes españa', 'acompañantes', 'españa', 'travestis', 'acompañantes españa', 'acompañantes canarias', 'amistad', 'conocer gente', 'citas en línea',
             'encontrar pareja en línea', 'conocer gente nueva', 'sitio de citas', 'relaciones en línea', 'amor en línea', 'búsqueda de pareja', 'encuentros en línea', 'solteros en línea', 'chat en línea', 'consejos de citas', 'servicio de citas', 'personas solteras', 'matchmaking', 'parejas compatibles', 'amistades en línea', 'relaciones serias', 'buscando amor',
-            'citas seguras', 'citas exitosas', 'encuentros rápidos', 'citas virtuales', 'encuentros amorosos', 'citas en línea seguras', 'red social de citas', 'servicio de emparejamiento', 'parejas felices', 'encontrar amor en línea', 'personas solteras cerca de mí', 'conexiones en línea', 'encuentros románticos'
+            'citas seguras', 'citas exitosas', 'encuentros rápidos', 'citas virtuales', 'encuentros amorosos', 'citas en línea seguras', 'red social de citas', 'servicio de emparejamiento', 'parejas felices', 'encontrar amor en línea', 'personas solteras cerca de mí', 'conexiones en línea', 'encuentros románticos', 'no-putas', 'no_putas'
 
         ]);
 

@@ -287,7 +287,10 @@ class UserController extends Controller
         $states = State::orderBy('name', 'asc')->pluck('name', 'id');
         $municipios = Municipio::orderBy('nombre', 'asc')->pluck('nombre', 'id');
         $provincias = Provincia::orderBy('nombre', 'asc')->pluck('nombre', 'id');
-
+        $paises = $user->paises;
+         // Obtener los tags asociados al anuncio
+        $anuncioTags = array();
+        
         $anuncio = new Anuncio();
         $anuncio->user_id = $user->id;
         $anuncio->ip_address = $_SERVER['REMOTE_ADDR'];
@@ -305,29 +308,25 @@ class UserController extends Controller
         $tag_etc = Tag::where('rubro', 'ETC')->orderby('nombre')->get();
         $tag_ec = Tag::where('rubro', 'EC')->orderby('nombre')->get();
         $tag_in = Tag::where('rubro', 'IN')->orderby('nombre')->get();
-        return view('admin.users.create_anuncio', compact('tag_in', 'tag_etc', 'tag_ec', 'tag_al', 'user', 'anuncio', 'categorias', 'clases', 'states','municipios', 'provincias'));
+        return view('admin.users.create_anuncio', compact('anuncioTags','tag_in', 'tag_etc', 'tag_ec', 'tag_al', 'user', 'anuncio', 'categorias', 'clases', 'states','municipios', 'provincias', 'paises'));
     }
 
 
     public function store_anuncio(AnuncioCreateAdminRequest $request, User $user)
     {
-        //$user->anuncios;
-
-        // request()->validate(Anuncio::$rules);
-
-//  dd($request->all());
-        // $anuncio = Anuncio::create($request->all());
-            $anuncio = Anuncio::create($request->validated());
+        //dd($request->all());
+        //$anuncio = Anuncio::create($request->all());
+        $anuncio = Anuncio::create($request->validated());
 
         if (!is_null($request->fecha_de_publicacion) && is_null($request->fecha_de_caducidad)) {
             $fecha_publi = Carbon::parse($request->fecha_de_publicacion);
-            $hora_actual = $fecha_publi->format('H');
-            if ($hora_actual > config('app.hora_agregar_dia')) {
-                $fecha_fin =  $fecha_publi->addDays($anuncio->dias);
-            } else {
+            // $hora_actual = $fecha_publi->format('H');
+            // if ($hora_actual > config('app.hora_agregar_dia')) {
+                // $fecha_fin =  $fecha_publi->addDays($anuncio->dias);
+            // } else {
                 $fecha_fin = $fecha_publi->addDays($anuncio->dias - 1);
                 $fecha_fin = $fecha_fin->format('Y-m-d');
-            }
+            // }
             $request->fecha_de_caducidad = $fecha_fin;
         }
         //dd($fecha_fin);
@@ -355,6 +354,9 @@ class UserController extends Controller
         $notas = $anuncio->notas;
         $pagos = $anuncio->pagos;
         $imagenes_drop_zone = [];
+        $paises = $user->paises;
+         // Obtener los tags asociados al anuncio
+        $anuncioTags = $anuncio->tags->pluck('id')->toArray();
         $imagenes = $anuncio->imagenes_ordenadas->toArray();
         array_walk($imagenes, function ($imagen) use (&$imagenes_drop_zone, $anuncio) {
             $imagenes_drop_zone[] = array(
@@ -368,7 +370,7 @@ class UserController extends Controller
         $tag_etc = Tag::where('rubro', 'ETC')->orderBy('nombre')->get();
         $tag_ec = Tag::where('rubro', 'EC')->orderBy('nombre')->get();
         $tag_in = Tag::where('rubro', 'IN')->orderby('nombre')->get();
-        return view('admin.users.edit_anuncio', compact('imagenes_drop_zone', 'tag_in', 'tag_etc', 'tag_ec', 'tag_al', 'user', 'anuncio', 'categorias', 'clases', 'notas', 'pagos'));
+        return view('admin.users.edit_anuncio', compact('imagenes_drop_zone', 'tag_in', 'tag_etc', 'tag_ec', 'tag_al', 'user', 'anuncio', 'anuncioTags','categorias', 'clases', 'notas', 'pagos', 'paises'));
     }
 
 

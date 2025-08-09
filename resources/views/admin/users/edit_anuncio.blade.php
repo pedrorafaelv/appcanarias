@@ -3,7 +3,7 @@
 @section('title', __('Editar Anuncio'))
 
 @section('content_header')
-    <h1>{{ __('Editar Anuncio') }}</h1>
+    <h1>{{ __('Editar Anuncio') }}</h1> 
 @stop
 
 @section('content')
@@ -13,7 +13,15 @@
                 {{ session('success') }}
             </x-adminlte-alert>
         @endif
-
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row mb-4">
             <div class="col-md-4">
                 <p class="mb-1"><strong>Usuario:</strong> #{{ $user->id }} - {{ $user->name }}</p>
@@ -33,7 +41,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row mb-4">
             <div class="col-md-6">
                 <x-adminlte-info-box title="Imágenes a Cargar" 
@@ -60,8 +67,10 @@
                         <a href="{{(config('app.url').'/images/anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
                            data-toggle="lightbox">
                             {{-- <img src="{{ Storage::url('anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}"  --}}
-                            <img src="{{config('app.url'). ('/images/anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
-                                 class="img-fluid mb-2 rounded">
+                            <div class="dz-preview dz-file-preview w-40 h-40 ">
+                                <img src="{{config('app.url'). ('/images/anuncio/'.$anuncio->id.'/'.$anuncio->portada->nombre) }}" 
+                                     class="img-fluid mb-2 rounded w-full h-full object-cover">
+                            </div>
                         </a>
                         <p class="text-muted">Ubicación: {{ $anuncio->portada->position }}</p>
                     @endif
@@ -108,7 +117,7 @@
               enctype="multipart/form-data" class="needs-validation" novalidate>
             @csrf
             @method('PUT')
-            
+            {{-- {{$paises}} --}}
             @include('admin.users.form')
 
             <div class="d-flex justify-content-between mt-4">
@@ -177,12 +186,11 @@
 
 @section('css')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.min.css">
-    {{-- <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"> --}}
-        <link rel="stylesheet" href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
-
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.css" />
     <style>
         .image-preview {
             max-height: 200px;
@@ -192,10 +200,27 @@
             margin-right: 5px;
             margin-bottom: 5px;
         }
+        .imagen-limitada {
+            width: 60vw;       /* 50% del ancho del viewport */
+            height: 40vh;      /* 30% del alto del viewport */
+            object-fit: contain; /* Muestra toda la imagen sin recortar */
+            display: block;     /* Elimina espacio extra debajo de la imagen */
+            margin: 0 auto;     /* Centra la imagen si es más pequeña que el contenedor */
+        }
         </style>
 @stop
 
 @section('js')
+
+ <!-- Carga jQuery PRIMERO -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+    <!-- Luego jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    
+
+
 @vite(['resources/js/app.js'])
 
 <!-- DataTables y plugins -->
@@ -210,13 +235,72 @@
 <!-- Dropzone -->
     <script src="https://unpkg.com/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 
-{{-- <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script> --}}
-
 <!-- CKEditor -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
-{{-- <script src="https://cdn.ckeditor.com/ckeditor5/34.2.0/classic/ckeditor.js"></script> --}}
+
 
     <script>
+// 1. Variable para controlar el estado de Sortable
+let sortableInitialized = false;
+
+// 2. Función para inicializar Sortable
+function initializeSortable() {
+    if ($('.sortable').length && !sortableInitialized) {
+        $('.sortable').sortable({
+            placeholder: "ui-state-highlight",
+            cursor: "move",
+            opacity: 0.7,
+            containment: "parent",
+            update: function(event, ui) {
+                // Función que se ejecuta automáticamente al soltar un elemento
+                saveImageOrder();
+            }
+        });
+        sortableInitialized = true;
+    }
+}
+
+$(document).ready(function() {
+    initializeSortable();
+    
+    // Si usas Livewire, agregar este hook
+    if (typeof Livewire !== 'undefined') {
+        Livewire.hook('message.processed', () => {
+            setTimeout(initializeSortable, 100);
+        });
+    }
+});
+
+
+ function reordenar_imagenes() {
+            //Reacomodamos la posicion de las imagenes
+            $('.sortable').sortable('refreshPositions');
+            //Convertimos a array
+            let sortedIDs = $(".sortable").sortable("toArray");
+            //Enviamos la peticion al servidor para re ordenar
+            $.ajax({
+                type: "POST",
+                url: "{{ route('admin.imagenes_guardar_orden', $anuncio) }}",
+                headers: {
+                    "X-CSRF-Token": "{{ csrf_token() }}"
+                },
+                data: {
+                    'images': JSON.stringify(sortedIDs)
+                },
+                dataType: "json",
+                success: function(data) {
+                    console.log(data)
+                }
+            });
+        }
+
+        //Seleccionamos el template donde va a ser mostrado el preview
+        var previewNode = document.querySelector("#template");
+        previewNode.id = "";
+        var previewTemplate = previewNode.parentNode.innerHTML;
+        previewNode.parentNode.removeChild(previewNode);
+
+
           Dropzone.autoDiscover = false;
 
         // Inicialización de DataTables
@@ -280,20 +364,7 @@
                 ...datatableConfig,
                 order: [[0, 'desc']]
             });
-            
-            // Inicialización de CKEditor
-            // ClassicEditor
-            //     .create(document.querySelector('#presentacion_aux'))
-            //     .catch(error => {
-            //         console.error(error);
-            //     });
-            
-            // ClassicEditor
-            //     .create(document.querySelector('#horario'))
-            //     .catch(error => {
-            //         console.error(error);
-            //     });
-           
+
             // Configuración de Dropzone
             if (document.getElementById('file-dropzone')) {
                 const dropzone = new Dropzone('#file-dropzone', {
@@ -377,7 +448,6 @@
         });
     });
 
-    // Comunicación CKEditor → Livewire (si usas wire:model en los campos)
     window.addEventListener('ckeditor-update', e => {
         const { id, value } = e.detail;
         const el = document.getElementById(id);
@@ -387,5 +457,22 @@
         }
     }); 
 
+
+document.getElementById('submit').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Mostrar overlay de carga
+    document.getElementById('waitOverlay').style.display = 'flex';
+    
+    // 1. Reordenar imágenes
+    reordenar_imagenes();
+    
+    // 2. Opcional: Enviar otras configuraciones (portada, etc.)
+    setTimeout(() => {
+        // Ocultar overlay y recargar después de 1.5 segundos (ajustable)
+        document.getElementById('waitOverlay').style.display = 'none';
+        window.location.reload(); // O mostrar mensaje de éxito
+    }, 1500);
+});
     </script>
 @stop

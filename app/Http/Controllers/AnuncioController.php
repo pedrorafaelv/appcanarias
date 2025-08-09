@@ -125,8 +125,8 @@ class AnuncioController extends Controller
     public function update(UpdateAnuncioRequest $request, Anuncio $anuncio)
     {
         //request()->validate(Anuncio::$rules);
-        dd($anuncio);
-        dd($request->all());
+        // dd($anuncio);
+        // dd($request->all());
         if (!str_contains($request->slug, $anuncio->id)) {
             $request->slug =  $anuncio->id . '-' . $request->slug;
         }

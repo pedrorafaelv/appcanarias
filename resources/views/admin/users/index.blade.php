@@ -37,9 +37,8 @@
                         <th>Nombre</th>
                         <th>Tel.</th>
                         <th>E-mail</th>
-                    <th>Rol</th>
+                        <th>Rol</th>
                         <th></th>
-
                     </tr>
                 </thead>
                 {{-- <tbody>

@@ -31,8 +31,6 @@
             align-items: center;
         }
     </style>
-
-
 <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
     <div class="space-y-8">
         <!-- Campos ocultos -->
@@ -219,6 +217,8 @@
 
         <!-- Componente Livewire -->
         @livewire('statedropdowns', [
+            'anuncio' => $anuncio->id,
+            'selectedProvincia' => old('provincia_id', $anuncio->provincia_id),
             'selectedMuni' => old('municipio_id', $anuncio->municipio_id),
             'selectedClase' => old('clase_id', $anuncio->clase_id),
             'selectedPlane' => old('plane_id', $anuncio->plane_id),
@@ -245,7 +245,11 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nacionalidad</label>
                 <select name="nacionalidad" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 @error('nacionalidad') border-red-500 @enderror">
-                    <!-- Opciones de nacionalidad -->
+                    @foreach ($paises as $pais)
+                        <option value="{{ $pais }}" @if (old('nacionalidad') == $pais or $pais == $anuncio->nacionalidad) Selected @endif>
+                            {{ $pais }}</option>
+                    @endforeach
+                
                 </select>
                 @error('nacionalidad')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -290,28 +294,89 @@
         </div>
 
         <!-- Sección 9: Tags y características -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            @foreach([
-                'tag_al' => 'Exterior',
-                'tag_in' => 'Interior',
-                'tag_ec' => 'En Casa',
-                'tag_etc' => 'En tu casa'
-            ] as $tagVar => $title)
-                <div>
-                    <p class="text-sm font-medium text-gray-700 mb-2">{{ $title }}</p>
-                    <div class="space-y-2">
-                        @foreach($$tagVar as $tag)
-                            <label class="flex items-center space-x-2">
-                                <input type="checkbox" name="tags[]" value="{{ $tag->id }}" 
-                                       @checked(in_array($tag->id, old('tags', [])))
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <span class="text-sm text-gray-700">{{ $tag->nombre }}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-            @endforeach
-        </div>
+        
+    <div class="row g-3">
+    <!-- Exterior -->
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <p class="fw-bold mb-2">Exterior</p>
+
+        @foreach ($tag_al as $tag)
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input" type="checkbox" name="tags[]" 
+                       id="tag_{{ $tag->id }}_al" value="{{ $tag->id }}"
+                       @if(in_array($tag->id, $anuncioTags)) checked @endif>
+                <label class="form-check-label small" for="tag_{{ $tag->id }}_al">
+                    {{ $tag->nombre }}
+                </label>
+            </div>
+        @endforeach
+
+        @error('tag')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <!-- Interior -->
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <p class="fw-bold mb-2">Interior</p>
+
+        @foreach ($tag_in as $tag)
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input" type="checkbox" name="tags[]" 
+                       id="tag_{{ $tag->id }}_in" value="{{ $tag->id }}"
+                       @if(in_array($tag->id, $anuncioTags)) checked @endif>
+                <label class="form-check-label small" for="tag_{{ $tag->id }}_in">
+                    {{ $tag->nombre }}
+                </label>
+            </div>
+        @endforeach
+
+        @error('tag')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <!-- En Casa -->
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <p class="fw-bold mb-2">En Casa</p>
+
+        @foreach ($tag_ec as $tag)
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input" type="checkbox" name="tags[]" 
+                       id="tag_{{ $tag->id }}_ec" value="{{ $tag->id }}"
+                       @if(in_array($tag->id, $anuncioTags)) checked @endif>
+                <label class="form-check-label small" for="tag_{{ $tag->id }}_ec">
+                    {{ $tag->nombre }}
+                </label>
+            </div>
+        @endforeach
+
+        @error('tag')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <!-- En tu casa -->
+    <div class="form-group col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <p class="fw-bold mb-2">En tu casa</p>
+
+        @foreach ($tag_etc as $tag)
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input" type="checkbox" name="tags[]" 
+                       id="tag_{{ $tag->id }}_etc" value="{{ $tag->id }}"
+                       @if(in_array($tag->id, $anuncioTags)) checked @endif>
+                <label class="form-check-label small" for="tag_{{ $tag->id }}_etc">
+                    {{ $tag->nombre }}
+                </label>
+            </div>
+        @endforeach
+
+        @error('tag')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+        
 
         <!-- Sección 10: Estados -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
